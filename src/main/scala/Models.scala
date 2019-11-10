@@ -1,51 +1,53 @@
 class Boat(val size:Int) {
+  println("\n  |-> Boat of size " + size)
 
-  println("\n|-> Boat of size " +size+ ", horizontal (1) or vertical (2) ? \n" )
+  println("    |--- FROM ?" )
+  val _from : String = scala.io.StdIn.readLine()
 
-  var orientation : String = new String()
-  if (scala.io.StdIn.readInt() == 1) { orientation = "horizontal" }
-  else { orientation = "vertical" }
+  println("    |--- TO ?" )
+  var _to : String = scala.io.StdIn.readLine()
 
-  def show: String = { "< " + "• "*size + ">  is " +orientation+ " in (A3-B7)" }
-
+  val show: String = "< " + "• "*size + ">  (" + _from + "-" + _to + ")"
 }
 
 
+
 class Player(var indice:Int) {
-  println("-> Player " +indice+ ", what's your name ?\n>")
+  println("--> Player " +indice+ ", what's your name ?")
   val name = scala.io.StdIn.readLine()
 
   val boat_3 = new Boat(3)
   val boat_6 = new Boat(6)
 
-  def call(): Unit = {
-    println("+ Player "+  indice + " (" +name+ ")")
-  }
+  val call: String = "+ Player "+  indice + " (" +name+ ")"
 
-  def showBoats: Unit = {
-    println("\n")
-    call()
-    println("|--  " + boat_3.show)
-    println("|--  " + boat_6.show)
-  }
-
+  val showBoats: String = "\n"+ call+ "\n|  "+ boat_3.show+ "\n|  "+ boat_6.show+ "\n"+ "------"*6+ "\n"
 }
 
 
+
+
+/*  ("A","B","C","D", ..., "J")
+    ("1","2","3","4", ..., "10") */
+
+class Board {
+  def main(args: Array[String]): Unit = {
+    var lines = Array.ofDim[Int](10,10)
+    var board = BoardArray(Map(("A",False),("B",False)),Map(("A",False),("B",False)))
+  }
+}
 
 
 
 object Game {
   def main(args: Array[String]): Unit = {
 
-    println("\n\n-------- New Game --------")
-
-    var player1 = new Player(1)
-    player1.showBoats
+    /**var player1 = new Player(1)
+    println(player1.showBoats)
 
     var player2 = new Player(2)
-    player2.showBoats
+    println(player2.showBoats)**/
 
-    println("--------------------------\n")
+    var board = new Board()
   }
 }
