@@ -8,6 +8,7 @@ def prettyPrint(board: Board): Unit =
 **/
 
 def isLoosed(board: Board): Boolean = {
+  // for boat in board.boatsList: if not isDestroyed(boat) return false
   return false
 }
 
