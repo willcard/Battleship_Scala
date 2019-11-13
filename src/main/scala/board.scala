@@ -1,20 +1,35 @@
 package board
 
-/**
-def prettyPrint(board: Board): Unit =
-  board.grid
-       .map(_.map(c => if (c == CELL_DEAD) " - " else " * ").mkString)
-       .foreach(println)
-**/
+class Board(boat_A: List[List[String]]) {
 
-def isLoosed(board: Board): Boolean = {
-  // for boat in board.boatsList: if not isDestroyed(boat) return false
-  return false
+  /**
+  def main(args: Array[String]): Unit = {
+    val boat_A: List[Int] = List(1,2,3)
+  }
+  **/
+
+  def get_boat_A: List[List[String]] = { return boat_A }
 }
 
-def isDestroyed(boat: List): Boolean = {
-  if boat.contains(1){
+object Board{
+  def isLoosed(board: Board): Boolean = {
+    // for boat in board.boatsList: if not isDestroyed(boat) return false
     return false
   }
-  else return true
+
+  def isDestroyed(boat: List[List[String]]): Boolean = {
+    if (boat(1).contains("O")){
+      return false
+    }
+    else return true
+  }
+
+  def prettyPrint: String = {
+    val bar: String = "---|---|---|---|---|\n"
+    val first_line: String = "   | 1 | 2 | 3 | 4 |\n" + bar
+    // Just example for now
+    return first_line + " 1 |   | O | - | O |\n" +bar+
+           " 2 |   |   |   |   |\n" +bar+
+           " 3 |   |   |   |   |\n" +bar
+  }
 }
