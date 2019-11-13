@@ -9,7 +9,7 @@ object Game {
     val redBoard = first_boards(0)
     val blueBoard = first_boards(1)
 
-    MainLoop(10, redBoard, blueBoard)
+    MainLoop(2, redBoard, blueBoard)
   }
 
   def Setup: List[Board] = {
@@ -18,8 +18,8 @@ object Game {
       - Ask to player positions
       - Create new boards
     **/
-    val redBoard = new Board(List(List("B2","C2"),List("-","O")))
-    val blueBoard = new Board(List(List("A1","B1","C1"),List("O","O","O")))
+    val redBoard = new Board(List(List("3:1","3:2"),List("+","O")))
+    val blueBoard = new Board(List(List("5:1","4:1","3:1"),List("O","O","O")))
 
     return List(redBoard, blueBoard)
   }

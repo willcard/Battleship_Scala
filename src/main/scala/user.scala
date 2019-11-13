@@ -6,10 +6,9 @@ object User {
   def play(player: String, opponentBoard: Board): Board = {
     var new_opponentBoard = opponentBoard //pour l'instant
 
-    println(player)
-    println(Board.prettyPrint)
+    println(Board.prettyPrint(player))
     println(opponentBoard.get_boat_A)
-    
+
     /**
     - Player try to find boat on opponent_board (give a point)
     - Edit the board
