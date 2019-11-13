@@ -1,3 +1,5 @@
+/**
+
 class Boat(val size:Int) {
   println("\n  |-> Boat of size " + size)
 
@@ -27,8 +29,8 @@ class Player(var indice:Int) {
 
 
 
-/*  ("A","B","C","D", ..., "J")
-    ("1","2","3","4", ..., "10") */
+  //("A","B","C","D", ..., "J")
+    //("1","2","3","4", ..., "10")
 
 class Board {
   def main(args: Array[String]): Unit = {
@@ -37,17 +39,16 @@ class Board {
   }
 }
 
-
-
 object Game {
   def main(args: Array[String]): Unit = {
 
-    /**var player1 = new Player(1)
+    var player1 = new Player(1)
     println(player1.showBoats)
 
     var player2 = new Player(2)
-    println(player2.showBoats)**/
+    println(player2.showBoats)
 
     var board = new Board()
   }
 }
+**/
