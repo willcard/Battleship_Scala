@@ -1,6 +1,18 @@
 package board
 
 object Board{
+
+  def createBoard(i:Int, board:List[List[String]], coord: List[String]): List[List[String]] = {
+    val point = coord(i-1).split(":")
+    val x = point(0).toInt
+    val y = point(1).toInt
+
+    var new_board = board.updated(y, board(y).updated(x, "O" ))
+
+    if (i == 9){ return new_board } // 9 = 2 + 3 + 4 (points /boat)
+    else{ return createBoard(i+1, new_board, coord) }
+  }
+
   // A revoir
   def isLoosed(board: List[List[String]]): Boolean = {
     /**
@@ -12,19 +24,18 @@ object Board{
 
   // A revoir
   def isDestroyed(boat: List[List[String]]): Boolean = {
-    if (boat(1).contains("O")){
-      return false
-    }
+    if (boat(1).contains("O")){ return false }
     else return true
   }
+
 
   def grid(i:Int, board:List[List[String]], pretty:String, _oK:String, _Ko:String, bar:String): String = {
     val line = " " +i.toString + board(i).mkString(" | "," | ","") + bar
 
-    if (i==1){
+    if (i == 1){
       return grid(i+1, board, bar + line, _oK, _Ko, bar)
       }
-    else if (i==9){         //replaceAll pas très functionnal
+    else if (i == 9){         //replaceAll not functionnal
       return (pretty + line).replaceAll("O",_oK).replaceAll("x",_Ko)
       }
     else {
@@ -34,7 +45,6 @@ object Board{
 
 
   def prettyPrint(player: String, board: List[List[String]]): String = {
-
     val ANSI_BLUE_B = "\u001b[1;34m" //Bold
     val ANSI_BLUE = "\u001b[0;34m"
     val ANSI_RED_B = "\u001b[1;31m" //Bold
@@ -53,7 +63,6 @@ object Board{
     val first_line = color+ "\n    ___________ " +player+ " PLAYER ___________   "+
         ANSI_RESET+ "\n   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"//\n" + bar
 
-    //println(_Ko)
     return first_line + grid(1, board, "", _oK, _Ko, bar)
   }
 }

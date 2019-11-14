@@ -18,32 +18,14 @@ object Game {
       - Create new boards
     **/
 
+    val emptyBoard = List.fill(10)(List.fill(10)(" "))
+    println(emptyBoard)
+
     val greenCoord = takeCoordonates("GREEN")
     val blueCoord = takeCoordonates("BLUE")
 
-    val greenLines = editLines(greenCoord)
-    val blueLines = editLines(blueCoord)
-
-    val greenBoard = List(List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "))
-    val blueBoard =  List(List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," ","O"," "),
-                          List(" "," "," "," "," "," "," "," ","x"," "),
-                          List(" "," "," "," "," "," "," "," ","O"," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," ","O","O","O","O"," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "),
-                          List(" "," "," "," "," "," "," "," "," "," "))
+    val greenBoard = Board.createBoard(1, emptyBoard, greenCoord)
+    val blueBoard = Board.createBoard(1, emptyBoard, blueCoord)
 
     return List(greenBoard, blueBoard)
   }
@@ -62,7 +44,7 @@ object Game {
     // Blue player plays on green player board
     println(Board.prettyPrint("BLUE",blueBoard))
     val new_greenBoard = play("BLUE",greenBoard)
-    state = isEnded(new_blueBoard,new_greenBoard) // pas très functionnal
+    state = isEnded(new_blueBoard,new_greenBoard) // editing state var not functionnal
 
     if (state != "NO") {return state}
     else return MainLoop(i-1, new_greenBoard,new_blueBoard)
@@ -88,29 +70,40 @@ object Game {
     return new_opponentBoard
   }
 
-  def takeCoordonates(player:String):List[List[String]] = {
+  def takeCoordonates(player:String): List[String] = {
     /**
+
       - Used to instance boards
       - May be used to choose target in play
 
       -> take  head and  tail points: "1:2" and "1:5"
+      -> check these points
       -> check if it's a possible boat: same line ok (1 coordonate ==)
       -> return the boat points list: ("1:2", "2:2", "3:2", "4:2", "5:2")
     **/
 
-    // example of output
-    return List(List("1:2", "2:2", "3:2"),
-                List("5:4","5:5"))
-  }
-
-  def editLines(coord: List[List[String]]):List[List[String]] = {
     /**
-      -> take the boat points list: (("1:2", "2:2", "3:2", "4:2"),("5:4","5:5"))
-      -> return lines edit with the indice of the line
+    println("<" +player+ "> first boat")
+    boat_A_from = takePoint("FROM")
+    boat_A_to = takePoint("TO")
+
+      ...
     **/
 
     // example of output
-    return List(List(" "," "," "," "," "," "," "," "," "," "),
-              List(" "," "," "," "," "," "," "," "," "," "))
+    return List("5:4","5:5",
+                "1:2","2:2","3:2",
+                "3:7","4:7","5:7","6:7")
   }
+
+  def takePoint(text:String):String = {
+    // text can be: "FROM:", "TO:", "IN:"
+
+    /**
+      -> ask a point
+      -> make sure to return it in "X:Y" format
+    **/
+    return "1:3"
+  }
+
 }
