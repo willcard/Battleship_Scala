@@ -1,12 +1,7 @@
 package board
 
-/**class Board(boat_A: List[List[String]]) {
-  //def main(args: Array[String]): Unit = {}
-}**/
-
 object Board{
   // A revoir
-  //def isLoosed(board: Board): Boolean = {
   def isLoosed(board: List[List[String]]): Boolean = {
     /**
     for boat in board.boatsList:
@@ -16,7 +11,6 @@ object Board{
   }
 
   // A revoir
-  //def isDestroyed(boat: List[List[String]]): Boolean = {
   def isDestroyed(boat: List[List[String]]): Boolean = {
     if (boat(1).contains("O")){
       return false
@@ -24,30 +18,22 @@ object Board{
     else return true
   }
 
+  def grid(i:Int, board:List[List[String]], pretty:String, _oK:String, _Ko:String, bar:String): String = {
+    val line = " " +i.toString + board(i).mkString(" | "," | ","") + bar
 
-  def grid(i: Int, _oK:String, _Ko:String): String = {
-    val bar = "\n---|---|---|---|---|---|---|---|---|---|\n"
-
-    /**
-    for i in range:
-      line += " | " +_oK if "O" in boat, _Ko else ....
-    return bar+ " " +i.toString+ line
-    **/
-
-    return bar +
-          " 1 |   |   |   |   |   |   |   |   |   |" +bar+
-          " 2 |   | " +_oK+ " | " +_Ko+ " | " +_oK+ " | " +_oK+ " |   |   |   |   |" +bar+
-          " 3 |   |   |   |   |   |   |   |   |   |" +bar+
-          " 4 |   |   |   |   |   |   |   |   |   |" +bar+
-          " 5 |   |   |   |   |   |   |   | " +_oK+ " |   |" +bar+
-          " 6 | " +_oK+ " | " +_Ko+ " | " +_Ko+ " | " +_Ko+ " |   |   |   | " +_oK+ " |   |" +bar+
-          " 7 |   |   |   |   |   |   |   | " +_Ko+ " |   |" +bar+
-          " 8 |   |   |   |   |   |   |   |   |   |" +bar+
-          " 9 |   |   |   |   |   |   |   |   |   |" +bar
+    if (i==1){
+      return grid(i+1, board, bar + line, _oK, _Ko, bar)
+      }
+    else if (i==9){         //replaceAll pas très functionnal
+      return (pretty + line).replaceAll("O",_oK).replaceAll("x",_Ko)
+      }
+    else {
+      return grid(i+1, board, pretty+line, _oK, _Ko, bar)
+      }
   }
 
 
-  def prettyPrint(player: String): String = {
+  def prettyPrint(player: String, board: List[List[String]]): String = {
 
     val ANSI_BLUE_B = "\u001b[1;34m" //Bold
     val ANSI_BLUE = "\u001b[0;34m"
@@ -63,10 +49,11 @@ object Board{
     val _Ko = ANSI_RED_B + "+" + ANSI_RESET
     val _oK = color + "O" + ANSI_RESET
 
-    val bar = "---|---|---|---|---|---|---|---|---|---|\n"
+    val bar = "\n---|---|---|---|---|---|---|---|---|---|\n"
     val first_line = color+ "\n    ___________ " +player+ " PLAYER ___________   "+
         ANSI_RESET+ "\n   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"//\n" + bar
 
-    return first_line + grid(1, _oK, _Ko)
+    //println(_Ko)
+    return first_line + grid(1, board, "", _oK, _Ko, bar)
   }
 }
