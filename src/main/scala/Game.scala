@@ -1,4 +1,6 @@
 import board._
+import scala.util.{Try, Success, Failure}
+
 //import artificial._
 
 object Game {
@@ -19,7 +21,6 @@ object Game {
     **/
 
     val emptyBoard = List.fill(10)(List.fill(10)(" "))
-    println(emptyBoard)
 
     val greenCoord = takeCoordonates("GREEN")
     val blueCoord = takeCoordonates("BLUE")
@@ -82,13 +83,10 @@ object Game {
       -> return the boat points list: ("1:2", "2:2", "3:2", "4:2", "5:2")
     **/
 
-    /**
-    println("<" +player+ "> first boat")
-    boat_A_from = takePoint("FROM")
-    boat_A_to = takePoint("TO")
+    val from = takePoint("FROM","")
+    val to = takePoint("TO","")
 
-      ...
-    **/
+    println("Boat is from: " +from+ " to: " +to)
 
     // example of output
     return List("5:4","5:5",
@@ -96,14 +94,30 @@ object Game {
                 "3:7","4:7","5:7","6:7")
   }
 
-  def takePoint(text:String):String = {
+  def takePoint(text:String,error:String):String = {
     // text can be: "FROM:", "TO:", "IN:"
+    val ANSI_RED = "\u001b[0;31m"
+    val ANSI_RESET = "\u001B[0m"
 
-    /**
-      -> ask a point
-      -> make sure to return it in "X:Y" format
-    **/
-    return "1:3"
+    val point = scala.io.StdIn.readLine(error +text+ " = ")
+    val coordonates = point.split(":").toList
+
+
+    if (coordonates.length != 2) {
+      return takePoint(text, ANSI_RED+"# error - incorrect format (expected X:Y)#\n"+ANSI_RESET)
+    }
+
+    val x = coordonates(0)
+    val y = coordonates(1)
+
+    if ( ( ! Try(x.toInt).isSuccess) || ( ! Try(y.toInt).isSuccess) ){
+      return takePoint(text, ANSI_RED+"# error - X or Y not Integer #\n"+ANSI_RESET)
+    }
+    else if ( ! (1 to 9 contains x.toInt) || ! (1 to 9 contains y.toInt) ) {
+      return takePoint(text, ANSI_RED+"# error - values not in [1,9] interval #\n"+ANSI_RESET)
+    }
+
+    return point
   }
 
 }

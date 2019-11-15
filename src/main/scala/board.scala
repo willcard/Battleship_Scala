@@ -7,7 +7,7 @@ object Board{
     val x = point(0).toInt
     val y = point(1).toInt
 
-    var new_board = board.updated(y, board(y).updated(x, "O" ))
+    val new_board = board.updated(y, board(y).updated(x-1, "O" )) //x-1 because 9 not 10
 
     if (i == 9){ return new_board } // 9 = 2 + 3 + 4 (points /boat)
     else{ return createBoard(i+1, new_board, coord) }
@@ -16,16 +16,12 @@ object Board{
   // A revoir
   def isLoosed(board: List[List[String]]): Boolean = {
     /**
-    for boat in board.boatsList:
-      if not isDestroyed(boat) return false
+      - iteration récursive sur les ligne de la boards
+      - break à False si trouve un "O"
+      - retourne True  sinon
     **/
-    return false
-  }
 
-  // A revoir
-  def isDestroyed(boat: List[List[String]]): Boolean = {
-    if (boat(1).contains("O")){ return false }
-    else return true
+    return false
   }
 
 
@@ -33,35 +29,28 @@ object Board{
     val line = " " +i.toString + board(i).mkString(" | "," | ","") + bar
 
     if (i == 1){
-      return grid(i+1, board, bar + line, _oK, _Ko, bar)
-      }
-    else if (i == 9){         //replaceAll not functionnal
-      return (pretty + line).replaceAll("O",_oK).replaceAll("x",_Ko)
-      }
-    else {
-      return grid(i+1, board, pretty+line, _oK, _Ko, bar)
-      }
+      return grid(i+1, board, bar + line, _oK, _Ko, bar) }
+    else if (i == 9){
+      return (pretty + line).replaceAll("O",_oK).replaceAll("x",_Ko) } //functionnal ?
+    else{
+      return grid(i+1, board, pretty+line, _oK, _Ko, bar) }
   }
 
 
   def prettyPrint(player: String, board: List[List[String]]): String = {
-    val ANSI_BLUE_B = "\u001b[1;34m" //Bold
-    val ANSI_BLUE = "\u001b[0;34m"
-    val ANSI_RED_B = "\u001b[1;31m" //Bold
-    val ANSI_RED = "\u001b[0;31m"
-    val ANSI_GREEN_B = "\u001b[1;32m" //Bold
-    val ANSI_GREEN = "\u001b[0;32m"
     val ANSI_RESET = "\u001B[0m"
+    val ANSI_RED_B = "\u001b[1;31m"
+    val ANSI_BLUE_B = "\u001b[1;34m"
+    val ANSI_GREEN_B = "\u001b[1;32m"
 
-    var color = ANSI_GREEN_B
-    if (player == "BLUE"){ color = ANSI_BLUE_B }
+    val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
 
     val _Ko = ANSI_RED_B + "+" + ANSI_RESET
     val _oK = color + "O" + ANSI_RESET
 
     val bar = "\n---|---|---|---|---|---|---|---|---|---|\n"
     val first_line = color+ "\n    ___________ " +player+ " PLAYER ___________   "+
-        ANSI_RESET+ "\n   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"//\n" + bar
+        ANSI_RESET+ "\n   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"
 
     return first_line + grid(1, board, "", _oK, _Ko, bar)
   }
