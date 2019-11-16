@@ -15,15 +15,15 @@ object Game {
   def Setup: List[List[List[String]]] = {
     /**
       - Choose dual mode or IA mode
-      - Ask to player positions (takeCoordonates)
-      - Send coordonates to editLines()
+      - Ask to player positions (takecoordinates)
+      - Send coordinates to editLines()
       - Create new boards
     **/
 
     val emptyBoard = List.fill(10)(List.fill(10)(" "))
 
-    val greenCoord = takeCoordonates("GREEN")
-    val blueCoord = takeCoordonates("BLUE")
+    val greenCoord = takeBoats("GREEN")
+    val blueCoord = takeBoats("BLUE")
 
     val greenBoard = Board.createBoard(1, emptyBoard, greenCoord)
     val blueBoard = Board.createBoard(1, emptyBoard, blueCoord)
@@ -62,31 +62,32 @@ object Game {
   }
 
   def play(player: String, opponentBoard: List[List[String]]): List[List[String]] = {
-    var new_opponentBoard = opponentBoard //pour l'instant
+    var new_opponentBoard = opponentBoard //pour l'instant pas bon
     /**
-    - Player enter coordonates
+    - Player enter coordinates (takePoint("IN"))
     - play edit the opponent board
     - play add tries to the tries list
     **/
     return new_opponentBoard
   }
 
-  def takeCoordonates(player:String): List[String] = {
+  def takeBoats(player:String): List[String] = {
     /**
-
-      - Used to instance boards
-      - May be used to choose target in play
-
-      -> take  head and  tail points: "1:2" and "1:5"
-      -> check these points
-      -> check if it's a possible boat: same line ok (1 coordonate ==)
-      -> return the boat points list: ("1:2", "2:2", "3:2", "4:2", "5:2")
+        - Used to instance boards
+        - Call takecoordinates 3 times (for boat size 2, 3 and 5)
+        - Return a concatenate list of all points
     **/
+    val ANSI_BLUE_B = "\u001b[1;34m"
+    val ANSI_GREEN_B = "\u001b[1;32m"
+    val ANSI_RESET = "\u001B[0m"
 
-    val from = takePoint("FROM","")
-    val to = takePoint("TO","")
+    val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
+    val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
+    println(player_line)
 
-    println("Boat is from: " +from+ " to: " +to)
+    val boat_A = takeCoordinates(2)
+    val boat_B = takeCoordinates(3)
+    val boat_C = takeCoordinates(5)
 
     // example of output
     return List("5:4","5:5",
@@ -94,21 +95,64 @@ object Game {
                 "3:7","4:7","5:7","6:7")
   }
 
-  def takePoint(text:String,error:String):String = {
+  def takeCoordinates(size:Int): List[String] = {
+    /**
+      -> take  head and  tail points: "1:2" and "1:5"
+      -> check if it's a possible boat: same line ok (1 coordinate ==)
+      -> check if size is ok
+      -> return the boat points list: ("1:2", "2:2", "3:2", "4:2", "5:2")
+    **/
+    val ANSI_RED = "\u001b[0;31m"
+    val ANSI_RESET = "\u001B[0m"
+
+    println("\n   < Boat of size " +size+ " >")
+    val point_from = takePoint("FROM","")
+    val point_to = takePoint("TO","")
+
+    if (point_from == point_to){
+      println(ANSI_RED+"# error - point TO = point FROM #\n"+ANSI_RESET)
+      return takeCoordinates(size)
+    }
+
+    if (point_from(0) == point_to(0)){
+      if ((point_from(1) - point_to(1)).abs != size){
+        println(ANSI_RED+"# error - boat is not of size " +size+ " #\n"+ANSI_RESET)
+        return takeCoordinates(size)
+      } else {
+        // return List with all the points of the boat on X axis
+      }
+    } else if (point_from(1) == point_to(1)){
+      if ((point_from(0) - point_to(0)).abs != size){
+        println(ANSI_RED+"# error - boat is not of size " +size+ " #\n"+ANSI_RESET)
+        return takeCoordinates(size)
+      } else {
+        // return List with all the points of the boat on Y axis
+      }
+    } else {
+      println(ANSI_RED+"# error - point TO and point FROM are not on the same line/column #\n"+ANSI_RESET)
+      return takeCoordinates(size)
+    }
+
+    // example of output
+    return List("5:4","5:5")
+  }
+
+  // print l'erreur avec de récursive (pas besoin de la passer en param)
+  def takePoint(text:String,error:String): List[Int] = {
     // text can be: "FROM:", "TO:", "IN:"
     val ANSI_RED = "\u001b[0;31m"
     val ANSI_RESET = "\u001B[0m"
 
     val point = scala.io.StdIn.readLine(error +text+ " = ")
-    val coordonates = point.split(":").toList
+    val coordinates = point.split(":").toList
 
 
-    if (coordonates.length != 2) {
-      return takePoint(text, ANSI_RED+"# error - incorrect format (expected X:Y)#\n"+ANSI_RESET)
+    if (coordinates.length != 2) {
+      return takePoint(text, ANSI_RED+"# error - incorrect format (expected X:Y) #\n"+ANSI_RESET)
     }
 
-    val x = coordonates(0)
-    val y = coordonates(1)
+    val x = coordinates(0)
+    val y = coordinates(1)
 
     if ( ( ! Try(x.toInt).isSuccess) || ( ! Try(y.toInt).isSuccess) ){
       return takePoint(text, ANSI_RED+"# error - X or Y not Integer #\n"+ANSI_RESET)
@@ -117,7 +161,7 @@ object Game {
       return takePoint(text, ANSI_RED+"# error - values not in [1,9] interval #\n"+ANSI_RESET)
     }
 
-    return point
+    return List(x.toInt, y.toInt)
   }
 
 }
