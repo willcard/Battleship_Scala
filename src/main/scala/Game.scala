@@ -9,7 +9,8 @@ object Game {
     val greenBoard = first_boards(0)
     val blueBoard = first_boards(1)
 
-    MainLoop(2, greenBoard, blueBoard)
+    val result = MainLoop(3, greenBoard, blueBoard)
+    println("\n :: Winner is " +result+ " player ! ::")
   }
 
   def Setup: List[List[List[String]]] = {
@@ -30,25 +31,37 @@ object Game {
     return List(greenBoard, blueBoard)
   }
 
+  // Essayer de faire 1 itération pour 1 joueur, pas les deux
+  // Voir MainLoop_2
   def MainLoop(i: Int, greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
-    if (i==1) {return "STOP"}
-
+    if (i==0) {return "STOP"}
     println("\n___ MainLoop ___")
+
+
     // Green player plays on Blue player board
     println(Board.prettyPrint("GREEN",greenBoard))
     val new_blueBoard = play("GREEN",blueBoard)
-    var state = isEnded(new_blueBoard,greenBoard)
+    //var state = isEnded(new_blueBoard,greenBoard)
 
-    if (state != "NO") {return state}
+    //if (state != "-") {return state}
 
     // Blue player plays on green player board
-    println(Board.prettyPrint("BLUE",blueBoard))
+    println(Board.prettyPrint("BLUE",new_blueBoard))
     val new_greenBoard = play("BLUE",greenBoard)
-    state = isEnded(new_blueBoard,new_greenBoard) // editing state var not functionnal
+    //state = isEnded(new_blueBoard,new_greenBoard) // editing state var not functionnal
 
-    if (state != "NO") {return state}
-    else return MainLoop(i-1, new_greenBoard,new_blueBoard)
+
+    //if (state != "-") {return state}
+    //else return MainLoop(i-1, new_greenBoard,new_blueBoard)
+    return MainLoop(i-1, new_greenBoard,new_blueBoard)
   }
+
+  def MainLoop_2(i:Int, opponentBoard:List[List[String]], playerBoard:List[List[String]], player=String): String = {
+    
+    return " "
+  }
+
+
 
   def isEnded(greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
     if (Board.isLoosed(greenBoard)) {
@@ -57,18 +70,26 @@ object Game {
     else if (Board.isLoosed(blueBoard)) {
       return "BLUE"
     }
-    else return "NO"
+    else return "-"
   }
 
   def play(player: String, opponentBoard: List[List[String]]): List[List[String]] = {
-    var new_opponentBoard = opponentBoard //pour l'instant pas bon
     /**
-    - Player enter coordinates (takePoint("IN"))
+    - Player enter coordinates (takePoint("TARGET"))
     - play edit the opponent board
     - play add tries to the tries list
     **/
-    return new_opponentBoard
+    val target = takePoint("TARGET","")
+    val x = target(0)
+    val y = target(1)
+
+    if (opponentBoard(y)(x-1) == "O"){
+      println("Touched !")
+      return opponentBoard.updated(y, opponentBoard(y).updated(x-1, "x"))
+    }
+    else { return opponentBoard }
   }
+
 
   def takeBoats(player:String): List[String] = {
     /**
@@ -85,12 +106,12 @@ object Game {
     println(player_line)
 
     val boat_A = takeCoordinates(2)
-    val boat_B = takeCoordinates(3)
-    val boat_C = takeCoordinates(5)
+    //val boat_B = takeCoordinates(3)
+    //val boat_C = takeCoordinates(5)
+    val boat_B = List("7:1","7:2","7:3")
+    val boat_C = List("2:1","2:2","2:3","2:4","2:5")
 
-    // merge boats and return the big list
     val merged = boat_C ::: boat_B ::: boat_A
-
     return merged
   }
 
@@ -174,7 +195,7 @@ object Game {
 
   // print l'erreur avant de récursive (pas besoin de la passer en param)
   def takePoint(text:String,error:String): List[Int] = {
-    // text can be: "FROM:", "TO:", "IN:"
+    // text can be: "FROM:", "TO:", "TARGET:"
     val ANSI_RED = "\u001b[0;31m"
     val ANSI_RESET = "\u001B[0m"
 

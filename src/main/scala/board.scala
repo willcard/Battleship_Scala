@@ -20,24 +20,31 @@ object Board{
       - break à False si trouve un "O"
       - retourne True  sinon
     **/
-
     return false
   }
 
 
-  def grid(i:Int, board:List[List[String]], pretty:String, _oK:String, _Ko:String, bar:String): String = {
+  def grid(i:Int, board:List[List[String]], pretty:String, _oK:String, _Ko:String): String = {
+    /**
+      - Place points based on points coordinates
+    **/
+    val bar = "\n---|---|---|---|---|---|---|---|---|---|\n"
     val line = " " +i.toString + board(i).mkString(" | "," | ","") + bar
 
     if (i == 1){
-      return grid(i+1, board, bar + line, _oK, _Ko, bar) }
+      return grid(i+1, board, bar + line, _oK, _Ko) }
     else if (i == 9){
       return (pretty + line).replaceAll("O",_oK).replaceAll("x",_Ko) } //functionnal ?
     else{
-      return grid(i+1, board, pretty+line, _oK, _Ko, bar) }
+      return grid(i+1, board, pretty+line, _oK, _Ko) }
   }
 
-  // retirer bar de cette fonction et l'écrire directement dans grid (plus besoin du paramètre)
+
   def prettyPrint(player: String, board: List[List[String]]): String = {
+    /**
+      - Create the pretty aspect of the board
+      - call grid to place the points
+    **/
     val ANSI_RESET = "\u001B[0m"
     val ANSI_RED_B = "\u001b[1;31m"
     val ANSI_BLUE_B = "\u001b[1;34m"
@@ -48,10 +55,10 @@ object Board{
     val _Ko = ANSI_RED_B + "+" + ANSI_RESET
     val _oK = color + "O" + ANSI_RESET
 
-    val bar = "\n---|---|---|---|---|---|---|---|---|---|\n"
+
     val first_line = color+ "\n    ___________ " +player+ " PLAYER ___________   "+
         ANSI_RESET+ "\n   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"
 
-    return first_line + grid(1, board, "", _oK, _Ko, bar)
+    return first_line + grid(1, board, "", _oK, _Ko)
   }
 }
