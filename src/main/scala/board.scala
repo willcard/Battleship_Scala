@@ -9,7 +9,7 @@ object Board{
 
     val new_board = board.updated(y, board(y).updated(x-1, "O" )) //x-1 because 9 not 10
 
-    if (i == 9){ return new_board } // 9 = 2 + 3 + 4 (points /boat)
+    if (i == 10){ return new_board } // 10 = 2 + 3 + 5 (size of boats)
     else{ return createBoard(i+1, new_board, coord) }
   }
 
@@ -36,7 +36,7 @@ object Board{
       return grid(i+1, board, pretty+line, _oK, _Ko, bar) }
   }
 
-
+  // retirer bar de cette fonction et l'écrire directement dans grid (plus besoin du paramètre)
   def prettyPrint(player: String, board: List[List[String]]): String = {
     val ANSI_RESET = "\u001B[0m"
     val ANSI_RED_B = "\u001b[1;31m"

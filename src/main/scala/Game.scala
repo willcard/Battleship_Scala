@@ -19,7 +19,6 @@ object Game {
       - Send coordinates to editLines()
       - Create new boards
     **/
-
     val emptyBoard = List.fill(10)(List.fill(10)(" "))
 
     val greenCoord = takeBoats("GREEN")
@@ -85,16 +84,14 @@ object Game {
     val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
     println(player_line)
 
-    //val boat_A = takeCoordinates(2)
-    //val boat_B = takeCoordinates(3)
+    val boat_A = takeCoordinates(2)
+    val boat_B = takeCoordinates(3)
     val boat_C = takeCoordinates(5)
 
-    println(boat_C)
+    // merge boats and return the big list
+    val merged = boat_C ::: boat_B ::: boat_A
 
-    // example of output
-    return List("5:4","5:5",
-                "1:2","2:2","3:2",
-                "3:7","4:7","5:7","6:7")
+    return merged
   }
 
   def takeCoordinates(size:Int): List[String] = {
@@ -102,7 +99,7 @@ object Game {
       -> take  head and  tail points: "1:2" and "1:5"
       -> check if it's a possible boat: same line ok (1 coordinate ==)
       -> check if size is ok
-      -> return the boat points list: ("1:2", "2:2", "3:2", "4:2", "5:2")
+      -> return the boat points list using beetweenPoints
     **/
     val ANSI_RED = "\u001b[0;31m"
     val ANSI_RESET = "\u001B[0m"
@@ -116,34 +113,45 @@ object Game {
       return takeCoordinates(size)
     }
 
+    // 1 similaire -> fonction ?
     if (point_from(0) == point_to(0)){
       if ( (point_to(1) - point_from(1)) < 0 ){
         println(ANSI_RED+"# error - boat is reversed (FROM > TO) #\n"+ANSI_RESET)
         return takeCoordinates(size)
       }
-      else if ((point_to(1) - point_from(1)) != size){
+      else if ((point_to(1) - point_from(1)) != size - 1){
         println(ANSI_RED+"# error - boat is not of size " +size+ " #\n"+ANSI_RESET)
         return takeCoordinates(size)
       }
       else {
-        // return List with all the points of the boat on X axis
-        return betweenPoints(0, point_from, point_to)
+        val variations = (point_from(1) to point_to(1)).toList
+
+        val fullBoat = betweenPoints(0, size, point_from(0), 0, variations, "")
+        println("\nPoints are "+fullBoat)
+
+        return fullBoat.split(" - ").toList
       }
     }
+    // 2 similaire -> fonction ?
     else if (point_from(1) == point_to(1)){
       if ( (point_to(0) - point_from(0)) < 0 ){
         println(ANSI_RED+"# error - boat is reversed (FROM > TO) #\n"+ANSI_RESET)
         return takeCoordinates(size)
       }
-      else if ((point_from(0) - point_to(0)) != size){
+      else if ((point_to(0) - point_from(0)) != size - 1){
         println(ANSI_RED+"# error - boat is not of size " +size+ " #\n"+ANSI_RESET)
         return takeCoordinates(size)
       }
       else {
-        // return List with all the points of the boat on Y axis
-        return betweenPoints(1, point_from, point_to)
+        val variations = (point_from(0) to point_to(0)).toList
+
+        val fullBoat = betweenPoints(0, size, point_from(1), 1, variations, "")
+        println("\nPoints are "+fullBoat)
+
+        return fullBoat.split(" - ").toList
       }
     }
+
     else {
       println(ANSI_RED+"# error - point TO and point FROM are not on the same line/column #\n"+ANSI_RESET)
       return takeCoordinates(size)
@@ -151,18 +159,20 @@ object Game {
   }
 
 
-  def betweenPoints(dim:Int, point_from:List[Int], point_to:List[Int]): List[String] = {
+  def betweenPoints(indice:Int, size:Int, fixed:Int, dim:Int, variations:List[Int], points:String): String = {
     /**
       - return a list containing all the points of the boat
       -> recursive for size iteration to add the points
     **/
-    
-    // example of output
-    return List("1:4","1:5","1:6","1:7","1:8")
+    val point = if (dim == 0) fixed.toString+ ":" +variations(indice).toString else variations(indice).toString+ ":" +fixed.toString
+    val newPoints = points+ " - " +point
+
+    if (indice == (size - 1)) { return point }
+    else { return point + " - " + betweenPoints(indice+1, size, fixed, dim, variations, newPoints) }
   }
 
 
-  // print l'erreur avec de récursive (pas besoin de la passer en param)
+  // print l'erreur avant de récursive (pas besoin de la passer en param)
   def takePoint(text:String,error:String): List[Int] = {
     // text can be: "FROM:", "TO:", "IN:"
     val ANSI_RED = "\u001b[0;31m"
@@ -170,7 +180,6 @@ object Game {
 
     val point = scala.io.StdIn.readLine(error +text+ " = ")
     val coordinates = point.split(":").toList
-
 
     if (coordinates.length != 2) {
       return takePoint(text, ANSI_RED+"# error - incorrect format (expected X:Y) #\n"+ANSI_RESET)
