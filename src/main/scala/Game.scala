@@ -85,9 +85,11 @@ object Game {
     val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
     println(player_line)
 
-    val boat_A = takeCoordinates(2)
-    val boat_B = takeCoordinates(3)
+    //val boat_A = takeCoordinates(2)
+    //val boat_B = takeCoordinates(3)
     val boat_C = takeCoordinates(5)
+
+    println(boat_C)
 
     // example of output
     return List("5:4","5:5",
@@ -115,27 +117,50 @@ object Game {
     }
 
     if (point_from(0) == point_to(0)){
-      if ((point_from(1) - point_to(1)).abs != size){
+      if ( (point_to(1) - point_from(1)) < 0 ){
+        println(ANSI_RED+"# error - boat is reversed (FROM > TO) #\n"+ANSI_RESET)
+        return takeCoordinates(size)
+      }
+      else if ((point_to(1) - point_from(1)) != size){
         println(ANSI_RED+"# error - boat is not of size " +size+ " #\n"+ANSI_RESET)
         return takeCoordinates(size)
-      } else {
+      }
+      else {
         // return List with all the points of the boat on X axis
+        return betweenPoints(0, point_from, point_to)
       }
-    } else if (point_from(1) == point_to(1)){
-      if ((point_from(0) - point_to(0)).abs != size){
+    }
+    else if (point_from(1) == point_to(1)){
+      if ( (point_to(0) - point_from(0)) < 0 ){
+        println(ANSI_RED+"# error - boat is reversed (FROM > TO) #\n"+ANSI_RESET)
+        return takeCoordinates(size)
+      }
+      else if ((point_from(0) - point_to(0)) != size){
         println(ANSI_RED+"# error - boat is not of size " +size+ " #\n"+ANSI_RESET)
         return takeCoordinates(size)
-      } else {
-        // return List with all the points of the boat on Y axis
       }
-    } else {
+      else {
+        // return List with all the points of the boat on Y axis
+        return betweenPoints(1, point_from, point_to)
+      }
+    }
+    else {
       println(ANSI_RED+"# error - point TO and point FROM are not on the same line/column #\n"+ANSI_RESET)
       return takeCoordinates(size)
     }
-
-    // example of output
-    return List("5:4","5:5")
   }
+
+
+  def betweenPoints(dim:Int, point_from:List[Int], point_to:List[Int]): List[String] = {
+    /**
+      - return a list containing all the points of the boat
+      -> recursive for size iteration to add the points
+    **/
+    
+    // example of output
+    return List("1:4","1:5","1:6","1:7","1:8")
+  }
+
 
   // print l'erreur avec de récursive (pas besoin de la passer en param)
   def takePoint(text:String,error:String): List[Int] = {
