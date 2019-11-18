@@ -13,14 +13,22 @@ object Board{
     else{ return createBoard(i+1, new_board, coord) }
   }
 
-  // A revoir
-  def isLoosed(board: List[List[String]]): Boolean = {
+
+  def isLoosed(i:Int, board: List[List[String]]): Boolean = {
     /**
       - iteration récursive sur les ligne de la boards
       - break à False si trouve un "O"
       - retourne True  sinon
     **/
-    return false
+    if (board(i).contains("O")){
+      return false
+    }
+    else if (i == 9){
+      return true
+    }
+    else {
+      return isLoosed(i+1, board)
+    }
   }
 
 

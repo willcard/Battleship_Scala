@@ -9,8 +9,14 @@ object Game {
     val greenBoard = first_boards(0)
     val blueBoard = first_boards(1)
 
-    val result = MainLoop(3, greenBoard, blueBoard)
-    println("\n :: Winner is " +result+ " player ! ::")
+    val ANSI_RESET = "\u001B[0m"
+    val ANSI_BLUE_B = "\u001b[1;34m"
+    val ANSI_GREEN_B = "\u001b[1;32m"
+
+    val result = MainLoop(greenBoard, blueBoard)
+    val color = if (result == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
+
+    println("\n :: Winner is " +color+result+ANSI_RESET+ " player ::\n")
   }
 
   def Setup: List[List[List[String]]] = {
@@ -31,43 +37,45 @@ object Game {
     return List(greenBoard, blueBoard)
   }
 
-  // Essayer de faire 1 itération pour 1 joueur, pas les deux
-  // Voir MainLoop_2
-  def MainLoop(i: Int, greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
-    if (i==0) {return "STOP"}
-    println("\n___ MainLoop ___")
 
+  def MainLoop(greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
+
+    println("\n___ MainLoop ___")
 
     // Green player plays on Blue player board
     println(Board.prettyPrint("GREEN",greenBoard))
     val new_blueBoard = play("GREEN",blueBoard)
-    //var state = isEnded(new_blueBoard,greenBoard)
 
-    //if (state != "-") {return state}
+    val state_1 = isEnded(new_blueBoard,greenBoard)
+    if (state_1 != "-") {
+      return state_1
+    }
 
     // Blue player plays on green player board
     println(Board.prettyPrint("BLUE",new_blueBoard))
     val new_greenBoard = play("BLUE",greenBoard)
-    //state = isEnded(new_blueBoard,new_greenBoard) // editing state var not functionnal
 
-
-    //if (state != "-") {return state}
-    //else return MainLoop(i-1, new_greenBoard,new_blueBoard)
-    return MainLoop(i-1, new_greenBoard,new_blueBoard)
+    val state_2 = isEnded(new_blueBoard,new_greenBoard)
+    if (state_2 != "-") {
+      return state_2
+    }
+    else {
+      return MainLoop(new_greenBoard,new_blueBoard)
+    }
   }
 
-  def MainLoop_2(i:Int, opponentBoard:List[List[String]], playerBoard:List[List[String]], player=String): String = {
-    
+  def MainLoop_2(i:Int, opponentBoard:List[List[String]], playerBoard:List[List[String]], player:String): String = {
+    //if isLoosed(opponentBoard)
     return " "
   }
 
 
 
   def isEnded(greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
-    if (Board.isLoosed(greenBoard)) {
+    if (Board.isLoosed(0, greenBoard)) {
       return "GREEN"
     }
-    else if (Board.isLoosed(blueBoard)) {
+    else if (Board.isLoosed(0, blueBoard)) {
       return "BLUE"
     }
     else return "-"
