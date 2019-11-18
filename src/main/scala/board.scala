@@ -64,8 +64,8 @@ object Board{
     val _oK = color + "O" + ANSI_RESET
 
 
-    val first_line = color+ "\n    ___________ " +player+ " PLAYER ___________   "+
-        ANSI_RESET+ "\n   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"
+    val first_line = color+ "\n    ___________ " +player+ " PLAYER ___________   \n"+
+        ANSI_RESET+ "\n• Your board:\n" + "\n   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |"
 
     return first_line + grid(1, board, "", _oK, _Ko)
   }

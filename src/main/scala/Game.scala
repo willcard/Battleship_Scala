@@ -13,7 +13,7 @@ object Game {
     val ANSI_BLUE_B = "\u001b[1;34m"
     val ANSI_GREEN_B = "\u001b[1;32m"
 
-    val result = MainLoop(greenBoard, blueBoard)
+    val result = MainLoop(greenBoard,blueBoard, List[String](),List[String]())
     val color = if (result == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
 
     println("\n :: Winner is " +color+result+ANSI_RESET+ " player ::\n")
@@ -38,13 +38,16 @@ object Game {
   }
 
 
-  def MainLoop(greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
-
-    println("\n___ MainLoop ___")
-
+  def MainLoop(greenBoard:List[List[String]], blueBoard:List[List[String]], greenHistory:List[String], blueHistory:List[String]): String = {
     // Green player plays on Blue player board
     println(Board.prettyPrint("GREEN",greenBoard))
-    val new_blueBoard = play("GREEN",blueBoard)
+    println(showHistory(greenHistory))
+
+    val green_played = play("GREEN",blueBoard)
+    val new_blueBoard = green_played._1
+    val green_tried = green_played._2
+
+    val new_greenHistory = greenHistory ::: List(green_tried)
 
     val state_1 = isEnded(new_blueBoard,greenBoard)
     if (state_1 != "-") {
@@ -53,22 +56,31 @@ object Game {
 
     // Blue player plays on green player board
     println(Board.prettyPrint("BLUE",new_blueBoard))
-    val new_greenBoard = play("BLUE",greenBoard)
+    println(showHistory(blueHistory))
+
+    val blue_played = play("BLUE",greenBoard)
+    val new_greenBoard = blue_played._1
+    val blue_tried = blue_played._2
+
+    val new_blueHistory = blueHistory ::: List(blue_tried)
 
     val state_2 = isEnded(new_blueBoard,new_greenBoard)
     if (state_2 != "-") {
       return state_2
     }
     else {
-      return MainLoop(new_greenBoard,new_blueBoard)
+      return MainLoop(new_greenBoard,new_blueBoard, new_greenHistory,new_blueHistory)
     }
   }
 
-  def MainLoop_2(i:Int, opponentBoard:List[List[String]], playerBoard:List[List[String]], player:String): String = {
-    //if isLoosed(opponentBoard)
-    return " "
-  }
 
+  def showHistory(history: List[String]): String = {
+    val ANSI_YELLOW_B = "\u001b[1;33m"
+    val ANSI_RESET = "\u001B[0m"
+    val previous = history.mkString(" "," - "," ")
+
+    return "• Previous targets (" +ANSI_YELLOW_B+ "touched" +ANSI_RESET+ "): " +previous
+  }
 
 
   def isEnded(greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
@@ -81,21 +93,26 @@ object Game {
     else return "-"
   }
 
-  def play(player: String, opponentBoard: List[List[String]]): List[List[String]] = {
+  def play(player: String, opponentBoard: List[List[String]]): (List[List[String]], String) = {
     /**
     - Player enter coordinates (takePoint("TARGET"))
     - play edit the opponent board
     - play add tries to the tries list
+    - return the target tried and the new board
     **/
+    val ANSI_YELLOW_B = "\u001b[1;33m"
+    val ANSI_RESET = "\u001B[0m"
+
     val target = takePoint("TARGET","")
     val x = target(0)
     val y = target(1)
+    val tried = x.toString+ ":" +y.toString
 
     if (opponentBoard(y)(x-1) == "O"){
       println("Touched !")
-      return opponentBoard.updated(y, opponentBoard(y).updated(x-1, "x"))
+      return (opponentBoard.updated(y, opponentBoard(y).updated(x-1, "x")), ANSI_YELLOW_B +tried+ ANSI_RESET )
     }
-    else { return opponentBoard }
+    else { return (opponentBoard, tried) }
   }
 
 
