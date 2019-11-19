@@ -1,5 +1,9 @@
 import board._
+import artificial._
+
 import scala.util.{Try, Success, Failure}
+import scala.sys.process._
+import io.AnsiColor._
 
 //import artificial._
 
@@ -21,15 +25,21 @@ object Game {
 
   def Setup: List[List[List[String]]] = {
     /**
-      - Choose dual mode or IA mode
+      - Choose dual mode or AI mode
       - Ask to player positions (takecoordinates)
       - Send coordinates to editLines()
       - Create new boards
     **/
     val emptyBoard = List.fill(10)(List.fill(10)(" "))
 
+    val ANSI_YELLOW_B = "\u001b[1;33m"
+    val ANSI_RESET = "\u001B[0m"
+    println(ANSI_YELLOW_B+ "AI mode ? [y/N]" +ANSI_RESET)
+    val ai_mode = scala.io.StdIn.readBoolean()
+
+    // AI will always replace BLUE player
+    val blueCoord = if (ai_mode) Artificial.takeBoats else takeBoats("BLUE")
     val greenCoord = takeBoats("GREEN")
-    val blueCoord = takeBoats("BLUE")
 
     val greenBoard = Board.createBoard(1, emptyBoard, greenCoord)
     val blueBoard = Board.createBoard(1, emptyBoard, blueCoord)
@@ -38,7 +48,10 @@ object Game {
   }
 
 
+  def clear() = "clear".!
+
   def MainLoop(greenBoard:List[List[String]], blueBoard:List[List[String]], greenHistory:List[String], blueHistory:List[String]): String = {
+    clear()
     // Green player plays on Blue player board
     println(Board.prettyPrint("GREEN",greenBoard))
     println(showHistory(greenHistory))
@@ -54,6 +67,7 @@ object Game {
       return state_1
     }
 
+    clear()
     // Blue player plays on green player board
     println(Board.prettyPrint("BLUE",new_blueBoard))
     println(showHistory(blueHistory))
