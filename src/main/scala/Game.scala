@@ -51,40 +51,35 @@ object Game {
   def clear() = "clear".!
 
   def MainLoop(greenBoard:List[List[String]], blueBoard:List[List[String]], greenHistory:List[String], blueHistory:List[String]): String = {
+
+    // GREEN player plays on BLUE player board
     clear()
-    // Green player plays on Blue player board
     println(Board.prettyPrint("GREEN",greenBoard))
     println(showHistory(greenHistory))
 
-    val green_played = play("GREEN",blueBoard)
+    val green_played = play(blueBoard)
     val new_blueBoard = green_played._1
     val green_tried = green_played._2
-
     val new_greenHistory = greenHistory ::: List(green_tried)
 
     val state_1 = isEnded(new_blueBoard,greenBoard)
-    if (state_1 != "-") {
-      return state_1
-    }
+    if (state_1 != "-") { return state_1 }
 
+
+    // BLUE player plays on GREEN player board
     clear()
-    // Blue player plays on green player board
     println(Board.prettyPrint("BLUE",new_blueBoard))
     println(showHistory(blueHistory))
 
-    val blue_played = play("BLUE",greenBoard)
+    val blue_played = play(greenBoard)
     val new_greenBoard = blue_played._1
     val blue_tried = blue_played._2
-
     val new_blueHistory = blueHistory ::: List(blue_tried)
 
     val state_2 = isEnded(new_blueBoard,new_greenBoard)
-    if (state_2 != "-") {
-      return state_2
-    }
-    else {
-      return MainLoop(new_greenBoard,new_blueBoard, new_greenHistory,new_blueHistory)
-    }
+    if (state_2 != "-") { return state_2 }
+
+    else { return MainLoop(new_greenBoard,new_blueBoard, new_greenHistory,new_blueHistory)}
   }
 
 
@@ -107,7 +102,7 @@ object Game {
     else return "-"
   }
 
-  def play(player: String, opponentBoard: List[List[String]]): (List[List[String]], String) = {
+  def play(opponentBoard: List[List[String]]): (List[List[String]], String) = {
     /**
     - Player enter coordinates (takePoint("TARGET"))
     - play edit the opponent board

@@ -37,7 +37,7 @@ object Artificial {
   def fakeTo(size: Int, from: List[Int]): List[Int] = {
     /**
       - Choose a to point using size and from point
-      - Vertical or Horizontal is randomly choosed 
+      - Vertical or Horizontal is randomly choosed
     **/
     val vertical = nextBoolean()
     val x_from = from(0)
@@ -54,12 +54,20 @@ object Artificial {
   }
 
 
-  def play: Unit = {
+  def play(opponentBoard: List[List[String]]): (List[List[String]], String) = {
     /**
       - Should play like Game.play but randomly first
-      _ Then should use the history
+      - Then should use the history
     **/
+    val x = nextInt(10).abs
+    val y = nextInt(10).abs
+    val tried = x.toString+ ":" +y.toString
 
+    if (opponentBoard(y)(x-1) == "O"){
+      // "@"" character will be used to know if the target was good 
+      return (opponentBoard.updated(y, opponentBoard(y).updated(x-1, "x")), "@"+tried)
+    }
+    else { return (opponentBoard, tried) }
   }
 
 }
