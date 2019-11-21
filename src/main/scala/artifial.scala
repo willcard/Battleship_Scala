@@ -54,17 +54,17 @@ object Artificial {
   }
 
 
-  def play(opponentBoard: List[List[String]]): (List[List[String]], String) = {
+  def play(opponentBoard: List[List[String]], history: List[String]): (List[List[String]], String) = {
     /**
       - Should play like Game.play but randomly first
       - Then should use the history
     **/
-    val x = nextInt(10).abs
-    val y = nextInt(10).abs
+    val x = nextInt(9).abs + 1
+    val y = nextInt(9).abs + 1
     val tried = x.toString+ ":" +y.toString
 
     if (opponentBoard(y)(x-1) == "O"){
-      // "@"" character will be used to know if the target was good 
+      // "@"" character will be used to know if the target was good
       return (opponentBoard.updated(y, opponentBoard(y).updated(x-1, "x")), "@"+tried)
     }
     else { return (opponentBoard, tried) }
