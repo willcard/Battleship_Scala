@@ -1,4 +1,5 @@
 package board
+
 import io.AnsiColor._
 /**
   REPLACE ALL ANSI VARIABLES BY:  BLUE + BOLD, from io.AnsiColor

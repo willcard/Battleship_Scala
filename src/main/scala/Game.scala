@@ -1,3 +1,5 @@
+package game
+
 import board._
 import artificial._
 
@@ -71,7 +73,10 @@ object Game {
 
     // BLUE player plays on GREEN player board
     clear()
-    if (ai_mode){ println("__ AI is playing __") }
+    if (ai_mode){
+      println("__ AI is playing __")
+      println(Board.prettyPrint("BLUE",new_blueBoard)) // For DEBUG
+    }
     else { println( Board.prettyPrint("BLUE",new_blueBoard) + showHistory(blueHistory) ) }
 
     val blue_played = if (ai_mode) Artificial.play(greenBoard, blueHistory) else play(greenBoard)
@@ -148,9 +153,9 @@ object Game {
     println(player_line)
 
     val boat_A = takeCoordinates(2)
-    //val boat_B = takeCoordinates(3)
+    val boat_B = takeCoordinates(3)
     //val boat_C = takeCoordinates(5)
-    val boat_B = List("7:1","7:2","7:3")
+    //val boat_B = List("7:1","7:2","7:3")
     val boat_C = List("2:1","2:2","2:3","2:4","2:5")
 
     val merged = boat_C ::: boat_B ::: boat_A
@@ -189,7 +194,7 @@ object Game {
       else {
         val variations = (point_from(1) to point_to(1)).toList
 
-        val fullBoat = betweenPoints(0, size, point_from(0), 0, variations, "")
+        val fullBoat = betweenPoints(0, size, point_from, 0, variations, "")
         println("\nPoints are "+fullBoat)
 
         return fullBoat.split(" - ").toList
@@ -208,7 +213,7 @@ object Game {
       else {
         val variations = (point_from(0) to point_to(0)).toList
 
-        val fullBoat = betweenPoints(0, size, point_from(1), 1, variations, "")
+        val fullBoat = betweenPoints(0, size, point_from, 1, variations, "")
         println("\nPoints are "+fullBoat)
 
         return fullBoat.split(" - ").toList
@@ -221,17 +226,18 @@ object Game {
     }
   }
 
-
-  def betweenPoints(indice:Int, size:Int, fixed:Int, dim:Int, variations:List[Int], points:String): String = {
+  // should be updated (too many useless parameters)
+  def betweenPoints(indice:Int, size:Int, from_point:List[Int], dim:Int, variations:List[Int], points:String): String = {
     /**
       - return a list containing all the points of the boat
       -> recursive for size iteration to add the points
     **/
+    val fixed = from_point(dim)
     val point = if (dim == 0) fixed.toString+ ":" +variations(indice).toString else variations(indice).toString+ ":" +fixed.toString
     val newPoints = points+ " - " +point
 
     if (indice == (size - 1)) { return point }
-    else { return point + " - " + betweenPoints(indice+1, size, fixed, dim, variations, newPoints) }
+    else { return point + " - " + betweenPoints(indice+1, size, from_point, dim, variations, newPoints) }
   }
 
 
