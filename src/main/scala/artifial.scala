@@ -36,6 +36,26 @@ object Artificial {
     return merged
   }
 
+  ////////  SHOULD pay attention to previous boats
+  // replace Artificial.takeBoats
+  def fakeBoats(i:Int): List[String] = {
+    val sizes = List(2,3,5) // size of boats
+
+    val from_point = fakeFrom(sizes(i))
+    val fake_to = fakeTo(sizes(i), from_point)
+    val to_point = fake_to._1
+    val dim = fake_to._2
+
+    val v = if (dim == 0) 1 else 0
+    val variations = (from_point(dim) to to_point(dim)).toList
+
+    val boat = Game.betweenPoints(0, sizes(i), from_point, dim, variations, "").split(" - ").toList
+    println("---> " +boat)
+
+    if (i==2){ return boat }
+    else { return boat ::: fakeBoats(i+1) }
+  }
+
   def fakeFrom(size:Int): List[Int] = {
     /**
       - Choose a random from point

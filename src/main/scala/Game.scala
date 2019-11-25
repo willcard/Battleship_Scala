@@ -44,7 +44,8 @@ object Game {
     val ai_mode = scala.io.StdIn.readBoolean()
 
     // AI will always replace BLUE player
-    val blueCoord = if (ai_mode) Artificial.takeBoats else takeBoats("BLUE")
+    val blueCoord = if (ai_mode) Artificial.fakeBoats(0) else takeBoats("BLUE")
+    //val blueCoord = if (ai_mode) Artificial.takeBoats else takeBoats("BLUE")
     val greenCoord = takeBoats("GREEN")
 
     val greenBoard = Board.createBoard(1, emptyBoard, greenCoord)
@@ -131,13 +132,13 @@ object Game {
     val tried = x.toString+ ":" +y.toString
 
     if (opponentBoard(y)(x-1) == "O"){
-      println("You touched an opponent boat !")
+      println("You touched an opponent boat !\n")
       return (opponentBoard.updated(y, opponentBoard(y).updated(x-1, "x")), ANSI_YELLOW_B +tried+ ANSI_RESET )
     }
     else { return (opponentBoard, tried) }
   }
 
-
+  ////////  SHOULD pay attention to previous boats
   def takeBoats(player:String): List[String] = {
     /**
         - Used to instance boards
