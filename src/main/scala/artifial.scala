@@ -2,43 +2,11 @@ package artificial
 
 import game._
 import scala.util.Random._
+import scala.annotation.tailrec
 
 object Artificial {
 
-  // should be recursive (1 boat a turn)
-  def takeBoats: List[String] = {
-    /**
-      -> Set a random point From and point TO (it have to make sense)
-      -> Then call classic betweenPoints to get all the points
-      -> return the list of all points
-    **/
-
-    val from_point = fakeFrom(3)
-    val fake_to = fakeTo(3, from_point)
-    val to_point = fake_to._1
-    val dim = fake_to._2
-
-    println(from_point+ " - " +to_point+ " :: " +dim)
-    val v = if (dim == 0) 1 else 0
-    val variations = (from_point(dim) to to_point(dim)).toList
-    println(variations)
-
-    val boat_B = Game.betweenPoints(0, 3, from_point, dim, variations, "").split(" - ").toList
-    println("--> " +boat_B)
-
-
-
-    val boat_A = List("1:9","2:9")
-    //val boat_B = List("7:1","7:2","7:3")
-    val boat_C = List("2:1","2:2","2:3","2:4","2:5")
-
-    val merged = boat_C ::: boat_B ::: boat_A
-    return merged
-  }
-
-  ////////  SHOULD pay attention to previous boats
-  // replace Artificial.takeBoats
-  def fakeBoats(i:Int): List[String] = {
+  def fakeBoats(i:Int, other_boats:List[String]): List[String] = {
     val sizes = List(2,3,5) // size of boats
 
     val from_point = fakeFrom(sizes(i))
@@ -50,18 +18,22 @@ object Artificial {
     val variations = (from_point(dim) to to_point(dim)).toList
 
     val boat = Game.betweenPoints(0, sizes(i), from_point, dim, variations, "").split(" - ").toList
-    println("---> " +boat)
 
-    if (i==2){ return boat }
-    else { return boat ::: fakeBoats(i+1) }
+    if ( boat.exists(other_boats.contains) ) { //check if some boats are crossed
+      return fakeBoats(i, other_boats)
+    }
+    else {
+      if (i==2){ return boat ::: other_boats}
+      else { return fakeBoats(i+1, boat ::: other_boats) }
+    }
   }
 
   def fakeFrom(size:Int): List[Int] = {
     /**
       - Choose a random from point
     **/
-    val x = nextInt(10 - (size-1)).abs
-    val y = nextInt(10 - (size-1)).abs
+    val x = nextInt(10 - (size)).abs + 1
+    val y = nextInt(10 - (size)).abs + 1
 
     return List(x,y)
   }

@@ -1,6 +1,8 @@
 package board
 
 import io.AnsiColor._
+import scala.annotation.tailrec
+
 /**
   REPLACE ALL ANSI VARIABLES BY:  BLUE + BOLD, from io.AnsiColor
 **/

@@ -4,10 +4,10 @@ import board._
 import artificial._
 
 import scala.util.{Try, Success, Failure}
+import scala.annotation.tailrec
 import scala.sys.process._
 import io.AnsiColor._
 
-//import artificial._
 
 object Game {
   def main(arg: Array[String]): Unit = {
@@ -44,9 +44,10 @@ object Game {
     val ai_mode = scala.io.StdIn.readBoolean()
 
     // AI will always replace BLUE player
-    val blueCoord = if (ai_mode) Artificial.fakeBoats(0) else takeBoats("BLUE")
-    //val blueCoord = if (ai_mode) Artificial.takeBoats else takeBoats("BLUE")
+    val blueCoord = if (ai_mode) Artificial.fakeBoats(0,List[String]()) else takeBoats("BLUE")
     val greenCoord = takeBoats("GREEN")
+    println(blueCoord)
+    println(greenCoord)
 
     val greenBoard = Board.createBoard(1, emptyBoard, greenCoord)
     val blueBoard = Board.createBoard(1, emptyBoard, blueCoord)
@@ -55,7 +56,8 @@ object Game {
   }
 
 
-  def clear() = "clear".!
+  //def clear() = "clear".!
+  def clear(): Unit = {}
 
   def MainLoop(ai_mode:Boolean, greenBoard:List[List[String]], blueBoard:List[List[String]], greenHistory:List[String], blueHistory:List[String]): String = {
 
