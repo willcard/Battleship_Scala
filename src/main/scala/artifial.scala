@@ -1,6 +1,6 @@
 package artificial
 
-import game._
+import board._
 import scala.util.Random._
 import scala.annotation.tailrec
 
@@ -17,7 +17,7 @@ object Artificial {
     val v = if (dim == 0) 1 else 0
     val variations = (from_point(dim) to to_point(dim)).toList
 
-    val boat = Game.betweenPoints(0, sizes(i), from_point, dim, variations, "").split(" - ").toList
+    val boat = Board.betweenPoints(0, sizes(i), from_point, dim, variations, "").split(" - ").toList
 
     if ( boat.exists(other_boats.contains) ) { //check if some boats are crossed
       return fakeBoats(i, other_boats)

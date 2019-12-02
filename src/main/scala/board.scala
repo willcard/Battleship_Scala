@@ -20,6 +20,20 @@ object Board{
     else{ return createBoard(i+1, new_board, coord) }
   }
 
+  // should be updated (too many useless parameters)
+  def betweenPoints(indice:Int, size:Int, from_point:List[Int], dim:Int, variations:List[Int], points:String): String = {
+    /**
+      - return a list containing all the points of the boat
+      -> recursive for size iteration to add the points
+    **/
+    val fixed = from_point(dim)
+    val point = if (dim == 0) fixed.toString+ ":" +variations(indice).toString else variations(indice).toString+ ":" +fixed.toString
+    val newPoints = points+ " - " +point
+
+    if (indice == (size - 1)) { return point }
+    else { return point + " - " + betweenPoints(indice+1, size, from_point, dim, variations, newPoints) }
+  }
+
 
   def isLoosed(i:Int, board: List[List[String]]): Boolean = {
     /**
