@@ -48,14 +48,8 @@ object Artificial {
     val y_from = from(1)
     val dim = if (vertical) 1 else 0
 
-    if (vertical){
-      print("vertical\n")
-      return (List(x_from, y_from + (size-1)), dim)
-    }
-    else {
-      print("horizontal\n")
-      return (List(x_from + (size-1), y_from), dim)
-    }
+    if (vertical){ return (List(x_from, y_from + (size-1)), dim) }
+    else { return (List(x_from + (size-1), y_from), dim) }
   }
 
 

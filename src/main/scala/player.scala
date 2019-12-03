@@ -98,30 +98,88 @@ object Player {
   }
 
 
-  ////////  SHOULD pay attention to previous boats
-  def takeBoats(player:String): List[String] = {
+
+
+  // ////////  SHOULD pay attention to previous boats
+  // def takeBoats(player:String): List[String] = {
+  //   /**
+  //       - Used to instance boards
+  //       - Call takecoordinates 3 times (for boat size 2, 3 and 5)
+  //       - Return a concatenate list of all points
+  //   **/
+  //   val ANSI_BLUE_B = "\u001b[1;34m"
+  //   val ANSI_GREEN_B = "\u001b[1;32m"
+  //   val ANSI_RESET = "\u001B[0m"
+  //
+  //   val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
+  //   val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
+  //   println(player_line)
+  //
+  //   val boat_A = takeCoordinates(2)
+  //   val boat_B = takeCoordinates(3)
+  //   //val boat_C = takeCoordinates(5)
+  //   //val boat_B = List("7:1","7:2","7:3")
+  //   val boat_C = List("2:1","2:2","2:3","2:4","2:5")
+  //
+  //   val merged = boat_C ::: boat_B ::: boat_A
+  //   return merged
+  // }
+
+
+  // def takeBoats(i:Int, player:String, other_boats:List[String]): List[String] = {
+  //   /**
+  //       - Used to instance boards
+  //       - Call takecoordinates 3 times (for boat size 2, 3 and 5)
+  //       - Return a concatenate list of all points
+  //   **/
+  //   val sizes = List(2,3,5) // size of boats
+  //
+  //   val ANSI_BLUE_B = "\u001b[1;34m"
+  //   val ANSI_GREEN_B = "\u001b[1;32m"
+  //   val ANSI_RESET = "\u001B[0m"
+  //
+  //   val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
+  //   val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
+  //   println(player_line)
+  //
+  //   val new_boat = takeCoordinates(sizes(i))
+  //
+  //   val merged = boat_C ::: boat_B ::: boat_A
+  //   return merged
+  // }
+
+  def takeBoats(i:Int, player:String, other_boats:List[String]): List[String] = {
     /**
         - Used to instance boards
         - Call takecoordinates 3 times (for boat size 2, 3 and 5)
         - Return a concatenate list of all points
     **/
+    val sizes = List(2,3,5) // size of boats
+
     val ANSI_BLUE_B = "\u001b[1;34m"
     val ANSI_GREEN_B = "\u001b[1;32m"
+    val ANSI_RED_B = "\u001b[1;31m"
     val ANSI_RESET = "\u001B[0m"
 
-    val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
-    val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
-    println(player_line)
+    if (i == 0) {
+      val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
+      val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
+      println(player_line)
+    }
 
-    val boat_A = takeCoordinates(2)
-    val boat_B = takeCoordinates(3)
-    //val boat_C = takeCoordinates(5)
-    //val boat_B = List("7:1","7:2","7:3")
-    val boat_C = List("2:1","2:2","2:3","2:4","2:5")
+    val new_boat = takeCoordinates(sizes(i))
 
-    val merged = boat_C ::: boat_B ::: boat_A
-    return merged
+    if (new_boat.exists(other_boats.contains)){ //check if some boats are crossed
+      println(ANSI_RED_B + "# This boats is crossing an other boat, please retry #" + ANSI_RESET)
+      return takeBoats(i, player, other_boats)
+    }
+    else {
+      if (i == 2) { return other_boats ::: new_boat}
+      else { return takeBoats(i+1, player, other_boats ::: new_boat) }
+    }
   }
+
+
 
   def play(opponentBoard: List[List[String]]): (List[List[String]], String) = {
     /**

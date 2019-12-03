@@ -32,7 +32,7 @@ object Game {
   def Setup: (List[List[String]], List[List[String]], Boolean) = {
     /**
       - Choose dual mode or AI mode
-      - Ask to player positions (takecoordinates)
+      - Ask player positions (takecoordinates)
       - Send coordinates to editLines()
       - Create new boards
     **/
@@ -44,8 +44,8 @@ object Game {
     val ai_mode = scala.io.StdIn.readBoolean()
 
     // AI will always replace BLUE player
-    val blueCoord = if (ai_mode) Artificial.fakeBoats(0,List[String]()) else Player.takeBoats("BLUE")
-    val greenCoord = Player.takeBoats("GREEN")
+    val blueCoord = if (ai_mode) Artificial.fakeBoats(0,List[String]()) else Player.takeBoats(0,"BLUE",List[String]())
+    val greenCoord = Player.takeBoats(0,"GREEN",List[String]())
     println(blueCoord)
     println(greenCoord)
 
