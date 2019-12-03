@@ -7,6 +7,10 @@ import scala.annotation.tailrec
 object Artificial {
 
   def fakeBoats(i:Int, other_boats:List[String]): List[String] = {
+    /**
+      - replace Player.takeBoats
+      - each turn of recursive iteration create a boat of size i
+    **/
     val sizes = List(2,3,5) // size of boats
 
     val from_point = fakeFrom(sizes(i))
@@ -30,7 +34,7 @@ object Artificial {
 
   def fakeFrom(size:Int): List[Int] = {
     /**
-      - Choose a random from point
+      - choose a random FROM point
     **/
     val x = nextInt(10 - (size)).abs + 1
     val y = nextInt(10 - (size)).abs + 1
@@ -40,7 +44,7 @@ object Artificial {
 
   def fakeTo(size: Int, from: List[Int]): (List[Int],Int) = {
     /**
-      - Choose a to point using size and from point
+      - choose a TO point using size and FROM point
       - Vertical or Horizontal is randomly choosed
     **/
     val vertical = nextBoolean()
@@ -53,17 +57,19 @@ object Artificial {
   }
 
 
+  //// TODO should choose based on good history results
   def play(opponentBoard: List[List[String]], history: List[String]): (List[List[String]], String) = {
     /**
-      - Should play like Game.play but randomly first
-      - Then should use the history
+      - replace Player.play
+      - choose a point not on history
+      - should choose based on good history results
     **/
     val x = nextInt(9).abs + 1
     val y = nextInt(9).abs + 1
     val tried = x.toString+ ":" +y.toString
 
     if (opponentBoard(y)(x-1) == "O"){
-      // "@"" character will be used to know if the target was good
+      // "@" character will be used to know if the target was good
       return (opponentBoard.updated(y, opponentBoard(y).updated(x-1, "x")), "@"+tried)
     }
     else { return (opponentBoard, tried) }

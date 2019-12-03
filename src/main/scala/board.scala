@@ -3,28 +3,29 @@ package board
 import io.AnsiColor._
 import scala.annotation.tailrec
 
-/**
-  REPLACE ALL ANSI VARIABLES BY:  BLUE + BOLD, from io.AnsiColor
-**/
 
+//// TODO replace all Ansi color variables by:  BLUE + BOLD, from io.AnsiColor
 object Board{
 
   def createBoard(i:Int, board:List[List[String]], coord: List[String]): List[List[String]] = {
+    /**
+      - update an empty board by placing points "O" based on coordonates
+    **/
     val point = coord(i-1).split(":")
     val x = point(0).toInt
     val y = point(1).toInt
 
-    val new_board = board.updated(y, board(y).updated(x-1, "O" )) //x-1 because 9 not 10
+    val new_board = board.updated(y, board(y).updated(x-1, "O" )) // x-1 because 9 not 10
 
     if (i == 10){ return new_board } // 10 = 2 + 3 + 5 (size of boats)
     else{ return createBoard(i+1, new_board, coord) }
   }
 
-  // should be updated (too many useless parameters)
+  //// TODO should be updated (too many useless parameters)
   def betweenPoints(indice:Int, size:Int, from_point:List[Int], dim:Int, variations:List[Int], points:String): String = {
     /**
       - return a list containing all the points of the boat
-      -> recursive for size iteration to add the points
+      - recursive for size iteration to add the points
     **/
     val fixed = from_point(dim)
     val point = if (dim == 0) fixed.toString+ ":" +variations(indice).toString else variations(indice).toString+ ":" +fixed.toString
@@ -37,9 +38,9 @@ object Board{
 
   def isLoosed(i:Int, board: List[List[String]]): Boolean = {
     /**
-      - iteration récursive sur les ligne de la boards
-      - break à False si trouve un "O"
-      - retourne True  sinon
+      - recursive iteration on board lines
+      - break with False if find a "O"
+      - return True else
     **/
     if (board(i).contains("O")){
       return false
@@ -55,7 +56,8 @@ object Board{
 
   def grid(i:Int, board:List[List[String]], pretty:String, _oK:String, _Ko:String): String = {
     /**
-      - Place points based on points coordinates
+      - place points based on points coordinates
+      - return a grid with all points
     **/
     val bar = "\n---|---|---|---|---|---|---|---|---|---|\n"
     val line = " " +i.toString + board(i).mkString(" | "," | ","") + bar
@@ -71,7 +73,7 @@ object Board{
 
   def prettyPrint(player: String, board: List[List[String]]): String = {
     /**
-      - Create the pretty aspect of the board
+      - create the pretty aspect of the board
       - call grid to place the points
     **/
     val ANSI_RESET = "\u001B[0m"

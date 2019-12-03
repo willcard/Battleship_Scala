@@ -11,7 +11,13 @@ import io.AnsiColor._
 
 object Game {
   def main(arg: Array[String]): Unit = {
-    println("\n"*5) // For cleaning
+    /**
+      - main function of the game:
+      - setup the game params
+      - run the main loop
+      - show the winner
+    **/
+    println("\n"*5)
     clear()
 
     val first_boards = Setup
@@ -29,12 +35,13 @@ object Game {
     println("\n :: Winner is " +color+result+ANSI_RESET+ " player ::\n")
   }
 
+
   def Setup: (List[List[String]], List[List[String]], Boolean) = {
     /**
-      - Choose dual mode or AI mode
-      - Ask player positions (takecoordinates)
-      - Send coordinates to editLines()
-      - Create new boards
+      - choose dual mode or AI mode
+      - ask player positions (takecoordinates)
+      - send coordinates to editLines()
+      - create new boards
     **/
     val emptyBoard = List.fill(10)(List.fill(10)(" "))
 
@@ -46,8 +53,8 @@ object Game {
     // AI will always replace BLUE player
     val blueCoord = if (ai_mode) Artificial.fakeBoats(0,List[String]()) else Player.takeBoats(0,"BLUE",List[String]())
     val greenCoord = Player.takeBoats(0,"GREEN",List[String]())
-    println(blueCoord)
-    println(greenCoord)
+
+    // println(blueCoord) //for debug
 
     val greenBoard = Board.createBoard(1, emptyBoard, greenCoord)
     val blueBoard = Board.createBoard(1, emptyBoard, blueCoord)
@@ -56,10 +63,14 @@ object Game {
   }
 
 
-  //def clear() = "clear".!
-  def clear(): Unit = {} // for debug
-
   def MainLoop(ai_mode:Boolean, greenBoard:List[List[String]], blueBoard:List[List[String]], greenHistory:List[String], blueHistory:List[String]): String = {
+    /**
+      -> Each turn both player play, and for each player:
+        - the state of the board is shown
+        - the history of his previous targets is shown
+        - he plays on the opponent's board
+        - the state of the game is checked (ended or not)
+    **/
 
     // GREEN player plays on BLUE player board
     if (! ai_mode){ clear() }
@@ -75,12 +86,17 @@ object Game {
 
 
     // BLUE player plays on GREEN player board
-    clear()
+    val ANSI_RESET = "\u001B[0m"
+    val ANSI_BLUE_B = "\u001b[1;34m"
+
     if (ai_mode){
-      println("__ AI is playing __")
-      println(Board.prettyPrint("BLUE",new_blueBoard)) // For DEBUG
+      println(ANSI_BLUE_B+ "\n__ AI is playing __" +ANSI_RESET)
+      //println(Board.prettyPrint("BLUE",new_blueBoard)) //for debug
     }
-    else { println( Board.prettyPrint("BLUE",new_blueBoard) + showHistory(blueHistory) ) }
+    else {
+      clear()
+      println( Board.prettyPrint("BLUE",new_blueBoard) + showHistory(blueHistory) )
+    }
 
     val blue_played = if (ai_mode) Artificial.play(greenBoard, blueHistory) else Player.play(greenBoard)
     val new_greenBoard = blue_played._1
@@ -89,7 +105,7 @@ object Game {
 
     if (ai_mode){
       if (blue_tried.contains("@")){ println("-> AI touched you at " +blue_tried.substring(1)+ " !") }
-      else { println("-> AI missed you") }
+      else { println("-> AI missed you at " +blue_tried) }
     }
 
     val state_2 = isEnded(new_blueBoard,new_greenBoard)
@@ -100,15 +116,24 @@ object Game {
 
 
   def showHistory(history: List[String]): String = {
+    /**
+      - shows the previous targets that the player attempted
+      - if the target was on a boat, the point is printed in yellow
+    **/
     val ANSI_YELLOW_B = "\u001b[1;33m"
     val ANSI_RESET = "\u001B[0m"
     val previous = history.mkString(" "," - "," ")
 
-    return "• Previous targets (" +ANSI_YELLOW_B+ "touched" +ANSI_RESET+ "): " +previous
+    return "\n• Previous targets (" +ANSI_YELLOW_B+ "touched" +ANSI_RESET+ "): " +previous
   }
 
 
   def isEnded(greenBoard: List[List[String]], blueBoard:  List[List[String]]): String = {
+    /**
+      - check if one board is loosed
+      - if true, return the winner color
+      - else, return "-"
+    **/
     if (Board.isLoosed(0, greenBoard)) {
       return "GREEN"
     }
@@ -119,4 +144,7 @@ object Game {
   }
 
 
+  def clear(): Unit = {
+    "clear".!
+  }
 }

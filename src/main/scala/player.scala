@@ -6,9 +6,13 @@ import scala.annotation.tailrec
 
 object Player {
 
-  // print error before recursive (don't make it param)
+  //// TODO print error before recursive (don't make it param)
   def takePoint(text:String,error:String): List[Int] = {
-    // text can be: "FROM:", "TO:", "TARGET:"
+    /**
+      - text can be: "FROM:", "TO:", "TARGET:"
+      - make sur that the user entry is like X:Y, nothing more or less
+      - return a list with X and Y as Int
+    **/
     val ANSI_RED = "\u001b[0;31m"
     val ANSI_RESET = "\u001B[0m"
 
@@ -28,22 +32,22 @@ object Player {
     else if ( ! (1 to 9 contains x.toInt) || ! (1 to 9 contains y.toInt) ) {
       return takePoint(text, ANSI_RED+"# error - values not in [1,9] interval #\n"+ANSI_RESET)
     }
-
     return List(x.toInt, y.toInt)
   }
 
 
+  //// TODO block1 and block2 are very similar: function ?
   def takeCoordinates(size:Int): List[String] = {
     /**
-      -> take  head and  tail points: "1:2" and "1:5"
-      -> check if it's a possible boat: same line ok (1 coordinate ==)
-      -> check if size is ok
-      -> return the boat points list using beetweenPoints
+      - take  head and  tail points: "1:2" and "1:5"
+      - check if it's a possible boat: same line ok (1 coordinate ==)
+      - check if size is ok
+      - return the boat points list using beetweenPoints
     **/
     val ANSI_RED = "\u001b[0;31m"
     val ANSI_RESET = "\u001B[0m"
 
-    println("\n   < Boat of size " +size+ " >")
+    println("\n   • Boat of size " +size+ " •")
     val point_from = takePoint("FROM","")
     val point_to = takePoint("TO","")
 
@@ -52,7 +56,7 @@ object Player {
       return takeCoordinates(size)
     }
 
-    // 1 similaire -> fonction ?
+    // BLOCK 1
     if (point_from(0) == point_to(0)){
       if ( (point_to(1) - point_from(1)) < 0 ){
         println(ANSI_RED+"# error - boat is reversed (FROM > TO) #\n"+ANSI_RESET)
@@ -71,7 +75,8 @@ object Player {
         return fullBoat.split(" - ").toList
       }
     }
-    // 2 similaire -> fonction ?
+
+    // BLOCK 2
     else if (point_from(1) == point_to(1)){
       if ( (point_to(0) - point_from(0)) < 0 ){
         println(ANSI_RED+"# error - boat is reversed (FROM > TO) #\n"+ANSI_RESET)
@@ -98,61 +103,11 @@ object Player {
   }
 
 
-
-
-  // ////////  SHOULD pay attention to previous boats
-  // def takeBoats(player:String): List[String] = {
-  //   /**
-  //       - Used to instance boards
-  //       - Call takecoordinates 3 times (for boat size 2, 3 and 5)
-  //       - Return a concatenate list of all points
-  //   **/
-  //   val ANSI_BLUE_B = "\u001b[1;34m"
-  //   val ANSI_GREEN_B = "\u001b[1;32m"
-  //   val ANSI_RESET = "\u001B[0m"
-  //
-  //   val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
-  //   val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
-  //   println(player_line)
-  //
-  //   val boat_A = takeCoordinates(2)
-  //   val boat_B = takeCoordinates(3)
-  //   //val boat_C = takeCoordinates(5)
-  //   //val boat_B = List("7:1","7:2","7:3")
-  //   val boat_C = List("2:1","2:2","2:3","2:4","2:5")
-  //
-  //   val merged = boat_C ::: boat_B ::: boat_A
-  //   return merged
-  // }
-
-
-  // def takeBoats(i:Int, player:String, other_boats:List[String]): List[String] = {
-  //   /**
-  //       - Used to instance boards
-  //       - Call takecoordinates 3 times (for boat size 2, 3 and 5)
-  //       - Return a concatenate list of all points
-  //   **/
-  //   val sizes = List(2,3,5) // size of boats
-  //
-  //   val ANSI_BLUE_B = "\u001b[1;34m"
-  //   val ANSI_GREEN_B = "\u001b[1;32m"
-  //   val ANSI_RESET = "\u001B[0m"
-  //
-  //   val color = if (player == "BLUE") ANSI_BLUE_B else ANSI_GREEN_B
-  //   val player_line = color+ "\n______ " +player+ " PLAYER ______" +ANSI_RESET
-  //   println(player_line)
-  //
-  //   val new_boat = takeCoordinates(sizes(i))
-  //
-  //   val merged = boat_C ::: boat_B ::: boat_A
-  //   return merged
-  // }
-
   def takeBoats(i:Int, player:String, other_boats:List[String]): List[String] = {
     /**
-        - Used to instance boards
-        - Call takecoordinates 3 times (for boat size 2, 3 and 5)
-        - Return a concatenate list of all points
+      - used to instance boards
+      - call takecoordinates 3 times (for boat size 2, 3 and 5)
+      - return a concatenate list of all points
     **/
     val sizes = List(2,3,5) // size of boats
 
@@ -180,13 +135,12 @@ object Player {
   }
 
 
-
   def play(opponentBoard: List[List[String]]): (List[List[String]], String) = {
     /**
-    - Player enter coordinates (takePoint("TARGET"))
-    - play edit the opponent board
-    - play add tries to the tries list
-    - return the target tried and the new board
+      - player enter coordinates (takePoint("TARGET"))
+      - play edit the opponent board
+      - play add tries to the tries list
+      - return the target tried and the new board
     **/
     val ANSI_YELLOW_B = "\u001b[1;33m"
     val ANSI_RESET = "\u001B[0m"
