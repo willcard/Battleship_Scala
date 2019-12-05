@@ -62,7 +62,7 @@ object Game {
     return (greenBoard, blueBoard, ai_mode)
   }
 
-
+  @tailrec
   def MainLoop(ai_mode:Boolean, greenBoard:List[List[String]], blueBoard:List[List[String]], greenHistory:List[String], blueHistory:List[String]): String = {
     /**
       -> Each turn both player play, and for each player:

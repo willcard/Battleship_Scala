@@ -107,6 +107,7 @@ object Player {
     /**
       - used to instance boards
       - call takecoordinates 3 times (for boat size 2, 3 and 5)
+      - check if boat are crossing each other
       - return a concatenate list of all points
     **/
     val sizes = List(2,3,5) // size of boats
